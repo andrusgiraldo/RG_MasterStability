@@ -74,8 +74,8 @@ end
 % and compute the corresponding master stability curves
 
 masterCurves    =   cell(1,length(auxInd));
-auxBound        =   [pi,pi,pi,pi,pi,pi/50,pi/100];
-auxMaxStep      =   [1.1,1.1,1.1,1.1,1.1,1/10,1/10];
+auxBound        =   [1.1*pi,1.1*pi,1.1*pi,1.1*pi,1.1*pi,1.1*pi/50,1.1*pi/100];
+auxMaxStep      =   [1.0,1.0,1.0,1.0,1.0,1/10,1/10];
 for i=1:length(perProbSol)
     auxBifCurve1                    =   BifCurve.branch;
     auxBifCurve1.point(auxInd(i))   =   perProbSol{i};
@@ -139,8 +139,8 @@ for i=1:2
     [br3,suc]                       =   SetupPsolFrom_psol(funcs_ext, brStarting{i}, ...
         length(brStarting{i}.point),'contpar', [ind.l1, ind.l2, ind.phi, ind.tau1, ind.tau2], 'extra_condition','true', 'step', 1e-3);
 
-    br3.parameter.min_bound         =   [ind.phi, -1.1*pi];
-    br3.parameter.max_bound         =   [ind.phi,  1.1*pi];
+    br3.parameter.min_bound         =   [ind.phi, -1.2*pi];
+    br3.parameter.max_bound         =   [ind.phi,  1.2*pi];
     br3.parameter.max_step          =   [0, 0.5; ind.phi, 0.005];
 
     figure(i); clf; hold on;

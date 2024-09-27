@@ -1,7 +1,7 @@
 %% Computation of Floquet Exponent by computing the Monondromy Matrix
 % By Andrus Giraldo and Stefan Ruschel - Last big revision 23/08/2024
 
-function [floqM, floqE, auxVec] = compFloquetExpMonBiDi(auxPerPoint,M)
+function [floqM, floqE, auxVec] = compFloquetExpMonBiDi(auxPerPoint,M,factor)
 %COMPFLOQUETEXPMOBIDI Screates a fFlowNetwork variable where every nDimUnit
 %   rows has the linearized dynamics of a node.
 %
@@ -26,6 +26,8 @@ function [floqM, floqE, auxVec] = compFloquetExpMonBiDi(auxPerPoint,M)
 %       auxPerPoint:    Function with the linearized internal dynamics 
 %                       of each node. This variable has as input "t"
 %       M:              Number of copies
+%       factor:         Factor to increase or decrease tolerances during
+%                       simulation of ODE45
 
 
 period      =   auxPerPoint.period;
@@ -59,7 +61,7 @@ indTimes            =   repmat(-1*auxIndTimes(1:end-1),1,M);
 
 
 fLinearFieldNet     =   @(t,U) createLinearizedNetworkDynamics(fLinearSingleField,gLinearCoupling,matrixCoupling,nDimUnit,U,indTimes,t,period);
-options1            =   odeset('RelTol',1e-8,'AbsTol',1e-7*ones(1,nDimNetwork*nDimUnit)); 
+options1            =   odeset('RelTol',1e-8*factor,'AbsTol',1e-7*factor*ones(1,nDimNetwork*nDimUnit)); 
 
 initCond            =   eye(nDimUnit*nDimNetwork);
 monMatrix           =   zeros(nDimUnit*nDimNetwork);

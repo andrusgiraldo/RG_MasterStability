@@ -48,7 +48,7 @@ for i=1:length(selectedProb)
     for j=1:length(auxM{i})
         tic
         valM                                = auxM{i};
-        [floqM, floqE, auxVec]              = compFloquetExpMonBiDi(floqStructure.perDDE,valM(j));
+        [floqM, floqE, auxVec]              = compFloquetExpMonBiDi(floqStructure.perDDE,valM(j),1);
         floqStructure.valuesM{j}.M          = valM(j);
         floqStructure.valuesM{j}.floqM      = floqM;
         floqStructure.valuesM{j}.floqE      = floqE;

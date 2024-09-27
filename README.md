@@ -15,5 +15,3 @@ Currently, all the data must be computed once due to the size constraints of Git
 Please change the scripts to load the correct address where your installation of DDE-Biftool is saved.
 
 Please cite our manuscript if you plan to use part of our code in your research.
-
-Under Construction: Currently, the scripts that generate the data for the two-bound solution have not been uploaded since we are cleaning and documenting the corresponding code. We will upload the corresponding scripts on September 30th at the latest. 

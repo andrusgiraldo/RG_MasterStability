@@ -49,7 +49,7 @@ for i=1:length(spatioTemporal.simul)
     set(gca,'position',[0.015,0.015,0.97,0.97],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
     xticklabels({'','','',''})
     yticklabels({'','','',''})
-    hgexport(gcf, ['./Figures/Fig1_STP_inv_q_' num2str(selectedProb{1}) '_M_' num2str(M) ' .png'], hgexport('factorystyle'), 'Format', 'png');
+    hgexport(gcf, ['./Figures/Fig1_STP_inv_q_' num2str(selectedProb{1}) '_M_' num2str(M) '.png'], hgexport('factorystyle'), 'Format', 'png');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,7 @@ set(gcf,'units','centimeters','pos', [5,20,4*3,2*3])
 set(gca,'position',[0.005,0.01,0.99,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',1.5) %[0.07,0.10,0.92,0.88]
 xticklabels({'',''})
 yticklabels({'',''})
-hgexport(gcf, ['./Figures/Fig1_MasterCurve_inv_q_' num2str(selectedProb{1}) ' .eps'], hgexport('factorystyle'), 'Format', 'eps');
+hgexport(gcf, ['./Figures/Fig1_MasterCurve_inv_q_' num2str(selectedProb{1}) '.eps'], hgexport('factorystyle'), 'Format', 'eps');
 
 % For enlargement
 xlim([-0.0902, -0.08])
@@ -107,7 +107,7 @@ set(gcf,'units','centimeters','pos', [5,20,3*1.125,3*1.75])
 set(gca,'position',[0.005,0.005,0.98,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',1.5) %[0.07,0.10,0.92,0.88]
 xticklabels({})
 yticklabels({})
-hgexport(gcf, ['./Figures/Fig1_MasterCurveZoom_inv_q_' num2str(selectedProb{1}) ' .eps'], hgexport('factorystyle'), 'Format', 'eps');
+hgexport(gcf, ['./Figures/Fig1_MasterCurveZoom_inv_q_' num2str(selectedProb{1}) '.eps'], hgexport('factorystyle'), 'Format', 'eps');
 
 %% Here, we generate the different panels for Figure 2
 clc; clear all; close all;
@@ -116,13 +116,13 @@ parnames    =   {'I','c','tau1','tau2' 'l1', 'l2', 'phi', 'T','k'};
 cind        =   [parnames;num2cell(1:length(parnames))];
 ind         =   struct(cind{:});
 
-selectedProb        =   {15,16,20,30};
+selectedProb        =   {'15','BIF','20','30'};
 auxMarkers          =   {'square','diamond','o','^'};
 auxColors           =   {[1 0 1],[0.6 0.4 1],[0 1 1],[0,0.8,0]};
 
 masterCurves        =   cell(1,length(selectedProb));
 for i=1:length(selectedProb)    
-    masterCurves{i} = load(['./Data/MasterStabilityCurves_inv_q_' num2str(selectedProb{i})  '.mat']);
+    masterCurves{i} = load(['./Data/MasterStabilityCurves_inv_q_' selectedProb{i}  '.mat']);
 end
 load('./Data/BifurcationCurve')
 
@@ -167,6 +167,8 @@ set(gca,'position',[0.005,0.01,0.99,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'F
 xticklabels({'','',''})
 yticklabels({'','',''})
 
+hgexport(gcf, ['./Figures/Fig2_BifurcationDiagram.eps'], hgexport('factorystyle'), 'Format', 'eps');
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Create Master Stability Curves
@@ -210,12 +212,18 @@ set(gca,'position',[0.005,0.01,0.99,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'F
 xticklabels({'',''})
 yticklabels({'',''})
 
+hgexport(gcf, ['./Figures/Fig2_MasterCurve_inv_q_15.eps'], hgexport('factorystyle'), 'Format', 'eps');
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Create Spatio-Temporal plot
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 selectedProb        =   {15};
 load(['./Data/SimulationMainPeriodic_inv_q_' num2str(selectedProb{1})  '.mat'])
+
+
+auxTimes    =   [438,580;580,672;672,848];
+auxColors   =   [0.4940,0.1840,0.5560; 0,0.4470,0.7410;0.4660,0.6740,0.1880];
 
 period              =   spatioTemporal.perDDE.period;
 for i=1:length(spatioTemporal.simul)
@@ -236,30 +244,50 @@ for i=1:length(spatioTemporal.simul)
     s                   =   surf(X,Y,Z);
     s.EdgeColor         =   'none';
     s.FaceColor         =   'flat';
-
     hold off;
-    cmap                =   [linspace(1,0,200)',linspace(1,0.4470,200)',linspace(1,0.7410,200)'];
-    colormap(cmap)
-    colorbar;
-    colorbar off
-    
-    axis([0,2500,1,nDimNetwork])
-    ticklengthUn        =   0.1;
-    labelSize           =   11;
+    if i==1
+        cmap                =   [linspace(1,auxColors(1,1),200)',linspace(1,auxColors(1,2),200)',linspace(1,auxColors(1,3),200)'];
+        colormap(cmap)
+        colorbar;
+        colorbar off
 
-    %box on;
-    yAuxTicks           =   [1 15 30 45 60];
-    xAuxTicks           =   [100 200 300 400];
-    set(gcf,'Color',[1 1 1]);
-    set(gcf,'units','centimeters','pos', [5,20,6*2*6,6*1.5*M])
-    set(gca,'position',[0.015,0.015,0.97,0.97],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
-    xticklabels({'','','',''})
-    yticklabels({'','','',''})
-    %hgexport(gcf, ['./Figures/Fig2_STP_inv_q_' num2str(selectedProb{1}) '_M_' num2str(M) ' .png'], hgexport('factorystyle'), 'Format', 'png');
+        axis([1035,1445,1,nDimNetwork])
+        ticklengthUn        =   0.1;
+        labelSize           =   11;
+    
+        yAuxTicks           =   [1 15 30 45 60];
+        xAuxTicks           =   438+[100 200 300 400];
+        set(gcf,'Color',[1 1 1]);
+        set(gcf,'units','centimeters','pos', [5,20,9*2,1.0*2])
+        set(gca,'position',[0.015,0.015,0.97,0.97],'XTick',[],'YTick',[],'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
+        xticklabels({'','','',''})
+        yticklabels({'','','',''})
+        hgexport(gcf, ['./Figures/Fig2_STP_inv_q_' num2str(selectedProb{1}) '_M_' num2str(M) '.png'], hgexport('factorystyle'), 'Format', 'png');
+    else
+        for j=1:3           
+            cmap                =   [linspace(1,auxColors(j,1),200)',linspace(1,auxColors(j,2),200)',linspace(1,auxColors(j,3),200)'];
+            colormap(cmap)
+            colorbar;
+            colorbar off
+            
+            axis([auxTimes(j,:),1,nDimNetwork])
+            ticklengthUn        =   0.1;
+            labelSize           =   11;
+        
+            yAuxTicks           =   [1 15 30 45 60];
+            xAuxTicks           =   [100 200 300 400];
+            set(gcf,'Color',[1 1 1]);
+            set(gcf,'units','centimeters','pos', [5,20,3*2,4.5*2])
+            set(gca,'position',[0.015,0.015,0.97,0.97],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
+            xticklabels({'','','',''})
+            yticklabels({'','','',''})
+            hgexport(gcf, ['./Figures/Fig2_STP_inv_q_' num2str(selectedProb{1}) '_M_' num2str(M) '_Part_' num2str(j) '.png'], hgexport('factorystyle'), 'Format', 'png');
+        end
+    end
 end
 
 
-%% Here, we generate the different panels for Figure 3
+%% Here, we generate all spatio temporal panels for Figure 3
 clc; clear all; close all;
 
 parnames    =   {'I','c','tau1','tau2' 'l1', 'l2', 'phi', 'T','k'};
@@ -305,26 +333,48 @@ for k = 1:length(selectedProb)
         xAuxTicks = [3600,3700,3800,3900];
         yAuxTicks = [1 nDimNetwork/2];
         set(gcf,'Color',[1 1 1]);
-        set(gcf,'units','centimeters','pos', [5,20,4*3,0.625*3*(M*selectedProb{k}/50)])
-        set(gca,'position',[0.005,0.005,0.992,0.992],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
-        xticklabels({'','','',''})
-        yticklabels({'','','',''})
-        axis off
-        hgexport(gcf, ['./Figures/Fig3_STP_inv_q_' num2str(selectedProb{k}) '_M_' num2str(M) ' .png'], hgexport('factorystyle'), 'Format', 'png');
+        if (k==1 && i==2)
+            axis([0 250,    1.0000  nDimNetwork])
+            xAuxTicks = [100,200];
+            set(gcf,'units','centimeters','pos', [5,20,2*3,0.625*3*(M*selectedProb{k}/50)])
+            set(gca,'position',[0.005,0.005,0.992,0.992],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
+            xticklabels({'','','',''})
+            yticklabels({'','','',''})
+            axis off
+            hgexport(gcf, ['./Figures/Fig3_STP_inv_q_' num2str(selectedProb{k}) '_M_' num2str(M) '_Part_1.png'], hgexport('factorystyle'), 'Format', 'png');
+
+            auxColorBar         =   [linspace(1,100/255,256)' linspace(1,84/255,256)' linspace(1,3/255,256)'];
+            colormap(auxColorBar)
+            colorbar;
+            xAuxTicks = [3800,3900];
+            set(gcf,'units','centimeters','pos', [5,20,2*3,0.625*3*(M*selectedProb{k}/50)])
+            set(gca,'position',[0.005,0.005,0.992,0.992],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
+            xticklabels({'','','',''})
+            yticklabels({'','','',''})
+            axis off
+            hgexport(gcf, ['./Figures/Fig3_STP_inv_q_' num2str(selectedProb{k}) '_M_' num2str(M) '_Part_2.png'], hgexport('factorystyle'), 'Format', 'png');
+        else
+            set(gcf,'Color',[1 1 1]);
+            set(gcf,'units','centimeters','pos', [5,20,4*3,0.625*3*(M*selectedProb{k}/50)])
+            set(gca,'position',[0.005,0.005,0.992,0.992],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
+            xticklabels({'','','',''})
+            yticklabels({'','','',''})
+            axis off
+            hgexport(gcf, ['./Figures/Fig3_STP_inv_q_' num2str(selectedProb{k}) '_M_' num2str(M) '.png'], hgexport('factorystyle'), 'Format', 'png');
+        end
     end
 end
 
 % Creating the divided phase plot
-close all
+close all, clear all
 
+load(['./Data/SimulationTwoPulsePeriodic_inv_q_200.mat'])
 
-load(['./Data/SimulationMainPeriodic_inv_q_' num2str(selectedProb{1})  '.mat'])
-
-[nDimNetwork, ~]    =   size(spatioTemporal.simul{2}.sol.y);
+[nDimNetwork, ~]    =   size(spatioTwoPulseTemporal.simul{1}.sol.y);
 nDimNetwork         =   nDimNetwork/2;
 
-solAux              =   spatioTemporal.simul{2}.sol;
-M                   =   spatioTemporal.simul{2}.M;
+solAux              =   spatioTwoPulseTemporal.simul{1}.sol;
+M                   =   spatioTwoPulseTemporal.simul{1}.M;
 
 [X,Y]               =   meshgrid(solAux.x,1:nDimNetwork);
 Z                   =   0*X;
@@ -332,101 +382,195 @@ for j=1:nDimNetwork
     Z(j,:)          =   solAux.y(2*j-1,:)';
 end
 
-figure(i+(2*k-1)); clf; hold on;
+figure(1); clf; hold on;
 s                   =   surf(X,Y,Z);
 s.EdgeColor         =   'none';
 s.FaceColor         =   'flat';
 
 hold off;
-auxColorBar         =   [linspace(1,1,256)' linspace(1,0.5,256)' linspace(1,0,256)'];
+auxColorBar         =   [linspace(1,0,256)' linspace(1,0.6,256)' linspace(1,0,256)'];
 colormap(auxColorBar)
 colorbar;
 clim([-2 2])
-axis([000, 250,    1.0000  100.0000])
+axis([3330  3830    1.0000  200.0000])
 
 ticklengthUn = 0.1;
 labelSize = 11;
-%box on;
-xAuxTicks = [100,200];
-yAuxTicks = [1 50];
+xAuxTicks = [3100,3200,3300,3400]+330;
+yAuxTicks = [1 100];
 set(gcf,'Color',[1 1 1]);
-set(gcf,'units','centimeters','pos', [5,20,2*3,1.25*3])
+set(gcf,'units','centimeters','pos', [5,20,4*3,0.625*3*4])
 set(gca,'position',[0.005,0.005,0.992,0.992],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
 xticklabels({'','','',''})
 yticklabels({'','','',''})
 axis off
-hgexport(gcf, ['./Figures/Fig3_STP_inv_q_' num2str(selectedProb{k}) '_M_' num2str(M) ' .png'], hgexport('factorystyle'), 'Format', 'png');
+hgexport(gcf, ['./Figures/Fig3_STP_TwoPulse_inv_q_200.png'], hgexport('factorystyle'), 'Format', 'png');
 
 
+%% Here, we generate the left column of the two pulse solution
+clc; clear all; close all;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Create Master Stability Curves
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ticklengthUn = 0.2;
+labelSize = 11;
+
+selectedProb        =   {'50','100'};
+auxColor            =   [1,0.7,0.1;0.4660,0.6740,0.1880];
+for i=1:length(selectedProb)
+    clear floqStructure masterCurve
+    load(['./Data/FloquetStructureMainPeriodic_inv_q_' selectedProb{i} '.mat'])
+    load(['./Data/MasterStabilityCurves_inv_q_' selectedProb{i} '.mat']);
+
+    figure(14); clf; hold on;
+    period  =   masterCurve.branch.point(1).period;
+    l1      =   arrayfun(@(x) x.parameter(5), masterCurve.branch.point);
+    l2      =   arrayfun(@(x) x.parameter(6), masterCurve.branch.point)*period;
+    plot([0 0],[-pi pi],':k');
+    plot(l1,l2-2*pi,'-c','Color', auxColor(i,:),'LineWidth', 1.5);
+    plot(l1,l2,'-c','Color', auxColor(i,:),'LineWidth', 1.5);
+    plot(l1,l2+2*pi,'-c','Color', auxColor(i,:),'LineWidth', 1.5);
+
+    
+    period  =   masterCurve.branch2.point(1).period;
+    l1      =   arrayfun(@(x) x.parameter(5), masterCurve.branch2.point);
+    l2      =   arrayfun(@(x) x.parameter(6), masterCurve.branch2.point)*period;
+    plot([0 0],[-pi pi],':k');
+
+    for k=-6:2:6
+        plot(l1,l2+k*pi,'-c','Color', auxColor(i,:),'LineWidth', 1.5);
+    end
+
+    auxSize     =   [80,20];
+    auxMarker   =   {[0,0,0];   auxColor(i,:)*0.8};
+    auxFace     =   {'none';    auxColor(i,:)*0.8};
+    for j=1:length(floqStructure.valuesM)
+        period      =   floqStructure.perDDE.period;
+        auxFloqE    =   floqStructure.valuesM{j}.floqE;
+        scatter(real(auxFloqE), imag(auxFloqE)*period, auxSize(j), 'o','MarkerEdgeColor', auxMarker{j},'MarkerFaceColor',auxFace{j},'LineWidth', 1.5)
+    end
+    hold off;
+
+    xAuxTicks = [-0.1, 0.0];
+    yAuxTicks = [-pi, pi];
+    xlim([-0.2, 0.04])
+    ylim([-pi, pi]);
+    hold off;
+    set(gcf,'Color',[1 1 1]);
+    set(gcf,'units','centimeters','pos', [5,20,4.0*3,2.5*3])
+    set(gca,'position',[0.005,0.01,0.99,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',1.5) %[0.07,0.10,0.92,0.88]
+    xticklabels({'',''})
+    yticklabels({'',''})
+    
+    hgexport(gcf, ['./Figures/Fig3_MasterCurve_inv_q_' selectedProb{i} '.eps'], hgexport('factorystyle'), 'Format', 'eps');
+end
+
+clc; close all;
+ticklengthUn = 0.2;
+labelSize = 11;
+
+load(['./Data/FloquetStructureTwoPulsePeriodic_inv_q_200.mat'])
+load(['./Data/MasterStabilityCurvesTwoPulse_inv_q_200.mat']);
+
+figure(14); clf; hold on;
+
+plot([0 0],[-pi pi],':k');
+for i=1:length(masterCurveDoublePulse{1}.branches)
+    auxBranch = masterCurveDoublePulse{1}.branches{i};
+    period  =   auxBranch.point(1).period;
+    l1      =   arrayfun(@(x) x.parameter(5), auxBranch.point);
+    l2      =   arrayfun(@(x) x.parameter(6), auxBranch.point)*period;
+
+    for k=-6:2:6
+        plot(l1,l2+k*pi,'-c','Color', [0, 0.6, 0],'LineWidth', 1.5);
+    end
+end
+
+for j=1:length(floqStructure.valuesM)
+        period      =   floqStructure.perDDE.period;
+        auxFloqE    =   floqStructure.valuesM{j}.floqE;
+        scatter(real(auxFloqE), imag(auxFloqE)*period, 80, 'o','MarkerEdgeColor', [0 0 0],'MarkerFaceColor','None','LineWidth', 1.5,'MarkerFaceAlpha',.2,'MarkerEdgeAlpha',.2)
+end
+
+hold off;
+
+xAuxTicks = [-0.1, 0.0];
+yAuxTicks = [-pi, pi];
+xlim([-0.2, 0.04])
+ylim([-pi, pi]);
+hold off;
+set(gcf,'Color',[1 1 1]);
+set(gcf,'units','centimeters','pos', [5,20,4.0*3,2.5*3])
+set(gca,'position',[0.005,0.01,0.99,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',1.5) %[0.07,0.10,0.92,0.88]
+xticklabels({'',''})
+yticklabels({'',''})
+    
+hgexport(gcf, ['./Figures/Fig3_MasterCurveTwoPulse_inv_q_200.eps'], hgexport('factorystyle'), 'Format', 'eps');
 
 
+%% Plotting the bifurcation diagram
+clc; clear all; close all;
+parnames    =   {'I','c','tau1','tau2' 'l1', 'l2', 'phi', 'T','k'};
+cind        =   [parnames;num2cell(1:length(parnames))];
+ind         =   struct(cind{:});
+
+load('./Data/BifurcationCurve')
+load('./Data/BifurcationCurveTwoPulses.mat')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Create the bifurcation diagram
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+auxTau      =   arrayfun(@(x) x.parameter(ind.tau1), BifCurve.branch.point);
+auxK        =   arrayfun(@(x) x.parameter(ind.k), BifCurve.branch.point);
+auxL1       =   arrayfun(@(x) x.parameter(ind.l1), BifCurve.branch.point);
+per         =   arrayfun(@(x) x.period, BifCurve.branch.point);
+
+auxTauSt    =   auxTau;     auxTauSt(auxL1>0)    =   NaN;
+auxKSt      =   auxK;       auxKSt(auxL1>0)      =   NaN;
+perSt       =   per;        perSt(auxL1>0)       =   NaN;
+
+auxTauUnst  =   auxTau;     auxTauUnst(auxL1<0)  =   NaN;
+auxKUnst    =   auxK;       auxKUnst(auxL1<0)    =   NaN;
+perUnst     =   per;        perUnst(auxL1<0)     =   NaN;
+
+figure(12); clf; hold on;
+plot(auxK, 1./auxTau,  'Color', [0 1 1], 'Linewidth', 3*1.0);
+plot(auxKSt, 1./auxTauSt, 'Color', [0 0 0], 'Linewidth', 3*1.0);
+plot(auxKUnst, 1./auxTauUnst,  'Color', [1 0 0], 'Linewidth', 3*1.0);
 
 
+% Plot the two pulse branch
+auxTau      =   arrayfun(@(x) x.parameter(ind.tau1), BifCurveTwoPulses.branch.point);
+auxK        =   arrayfun(@(x) x.parameter(ind.k), BifCurveTwoPulses.branch.point);
+auxL1       =   arrayfun(@(x) x.parameter(ind.l1), BifCurveTwoPulses.branch.point);
+per         =   arrayfun(@(x) x.period, BifCurveTwoPulses.branch.point);
 
+auxTol = -1e-04;
+auxTauSt    =   auxTau;     auxTauSt(auxL1>auxTol)    =   NaN;
+auxKSt      =   auxK;       auxKSt(auxL1>auxTol)      =   NaN;
+perSt       =   per;        perSt(auxL1>auxTol)       =   NaN;
 
-%% Code to generate the Stefan's picture
-% t = linspace(16*period,31*period,15*100);
-% y = deval(solAux,t);
-% mx = max(y(1,:));
-% mn = min(y(1,:));
-% [X,Y] = meshgrid(1:length(t),1:nDimNetwork);
-% Z=0*X;
-% for i=1:nDimNetwork
-%     Z(i,:) = y(2*i-1,:)';
-% end
-% figure(3); clf; hold on;
-% s=surf(X/length(t)*15*period,Y,Z);
-% s.EdgeColor = 'none';
-% s.FaceColor = 'flat';
-% hold off;
+auxTauUnst  =   auxTau;     auxTauUnst(auxL1<auxTol)  =   NaN;
+auxKUnst    =   auxK;       auxKUnst(auxL1<auxTol)    =   NaN;
+perUnst     =   per;        perUnst(auxL1<auxTol)     =   NaN;
+
+%plot(auxK, 1./auxTau,  'Color', [0 1 1], 'Linewidth', 3*1.0);
+plot(auxKSt, 1./auxTauSt, 'Color', 0.7*[0.3010, 0.7450, 0.9330], 'Linewidth', 3*1.0);
+plot(auxKUnst, 1./auxTauUnst,  'Color', 0.7*[213 79 100]/255, 'Linewidth', 3*1.0);
+
+ylim([0.98, 1.06]);
+xlim([0.005, 0.025]);
 % 
-% % purple colorbar
-% cmap = [linspace(1,0.4940,200)',linspace(1,0.1840,200)',linspace(1,0.5560,200)'];
-% colormap(cmap)
-% colorbar;
-% axis tight
-% ticklengthUn = 1.1;
-% labelSize = 11;
-% %box on;
-% xAuxTicks = [1 20 40 60];
-% yAuxTicks = [1 100 200 300 400];
-% set(gcf,'Color',[1 1 1]);
-% set(gcf,'units','centimeters','pos', [5,20,6*2*6,6*1.5*M])
-% set(gca,'position',[0.015,0.015,0.96,0.96],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
-% xticklabels({'','','',''})
-% yticklabels({'','','',''})
-% hgexport(gcf, 'img/Fig2STPd-1.png', hgexport('factorystyle'), 'Format', 'png');
-% 
-% % blue colorbar
-% cmap = [linspace(1,0,200)',linspace(1,0.4470,200)',linspace(1,0.7410,200)'];
-% colormap(cmap)
-% colorbar;
-% axis tight
-% ticklengthUn = 1.1;
-% labelSize = 11;
-% %box on;
-% xAuxTicks = [1 20 40 60];
-% yAuxTicks = [1 100 200 300 400];
-% set(gcf,'Color',[1 1 1]);
-% set(gcf,'units','centimeters','pos', [5,20,6*2*6,6*1.5*M])
-% set(gca,'position',[0.015,0.015,0.96,0.96],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
-% xticklabels({'','','',''})
-% yticklabels({'','','',''})
-% hgexport(gcf, 'img/Fig2STPd-2.png', hgexport('factorystyle'), 'Format', 'png');
-% 
-% % green colorbar
-% cmap = [linspace(1,0.4660,200)',linspace(1,0.6740,200)',linspace(1,0.1880,200)'];
-% colormap(cmap)
-% colorbar;
-% axis tight
-% ticklengthUn = 1.1;
-% labelSize = 11;
-% %box on;
-% xAuxTicks = [1 20 40 60];
-% yAuxTicks = [1 100 200 300 400];
-% set(gcf,'Color',[1 1 1]);
-% set(gcf,'units','centimeters','pos', [5,20,6*2*6,6*1.5*M])
-% set(gca,'position',[0.015,0.015,0.96,0.96],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',.5) %[0.07,0.10,0.92,0.88]
-% xticklabels({'','','',''})
-% yticklabels({'','','',''})
-% hgexport(gcf, 'img/Fig2STPd-3.png', hgexport('factorystyle'), 'Format', 'png');
+ticklengthUn = 0.2;
+labelSize = 11;
+box on;
+yAuxTicks = [1.0, 1.04];
+xAuxTicks = [0.01, 0.02];
+set(gcf,'Color',[1 1 1]);
+set(gcf,'units','centimeters','pos', [5,20,4.0*3,2.5*3])
+set(gca,'position',[0.005,0.01,0.99,0.98],'XTick',xAuxTicks,'YTick',yAuxTicks,'FontSize',labelSize,'ticklength',[ticklengthUn/6,0.50],'linewidth',1.5) %[0.07,0.10,0.92,0.88]
+xticklabels({'',''})
+yticklabels({'',''})
+
+hgexport(gcf, ['./Figures/Fig3_BifurcationDiagram.eps'], hgexport('factorystyle'), 'Format', 'eps');
